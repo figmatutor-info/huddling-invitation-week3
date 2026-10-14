@@ -1,23 +1,10 @@
 // 가짜 데이터 (docs/PRD.md 기준)
 // Supabase를 연결하기 전까지 화면 개발·확인용으로 쓴다.
 
-// 초대장: 제목 · 일시 · 장소 · 본문
-export type Invitation = {
-  id: string;
-  title: string; // 최대 2줄, 줄바꿈(\n)은 그대로 보여준다
-  date: string; // 일시. 화면에 보이는 글자 그대로 저장한다
-  location: string; // 장소. 주소를 글자로만 표시한다 (지도 없음)
-  body: string; // 본문. 줄바꿈(\n)은 그대로 보여준다
-};
+// 타입은 types.ts로 옮겼다. 기존 import가 깨지지 않게 여기서도 내보낸다.
+import type { Invitation, Rsvp } from "./types";
 
-// 참석 응답: 이름 · 참석 여부 · 동반 인원
-export type Rsvp = {
-  id: string;
-  invitationId: string;
-  name: string;
-  status: "yes" | "no"; // yes 참석 · no 불참
-  companions: number; // 본인을 제외한 동반 인원. 불참이면 0
-};
+export type { Invitation, Rsvp };
 
 // 실제 서비스에서는 추측하기 어려운 ID(crypto.randomUUID())를 쓴다.
 // "demo"는 가짜 데이터 확인용 ID다.

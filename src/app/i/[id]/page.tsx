@@ -4,10 +4,11 @@ import Image from "@/components/Image";
 import InfoRow from "@/components/InfoRow";
 import InvitationCover from "@/components/InvitationCover";
 import RSVPCard from "@/components/RSVPCard";
-import { getMockInvitation } from "@/lib/mock";
+import { submitRsvp } from "@/lib/actions";
+import { getInvitation } from "@/lib/data";
 
 // /i/[id] : 게스트가 초대장을 보고 참석 여부를 보낸다 (Figma node 74:525)
-// 지금은 가짜 데이터(mock.ts)만 쓰므로 /i/demo, /i/empty 에서만 열린다.
+// 초대장은 Supabase에서 읽어온다. 없는 id면 404 화면을 보여준다.
 export default function InvitePage({ params }: PageProps<"/i/[id]">) {
   return (
     <main className="mx-auto w-full max-w-mobile">
@@ -21,7 +22,7 @@ export default function InvitePage({ params }: PageProps<"/i/[id]">) {
 
 async function Invitation({ params }: Pick<PageProps<"/i/[id]">, "params">) {
   const { id } = await params;
-  const invitation = getMockInvitation(id);
+  const invitation = await getInvitation(id);
 
   if (!invitation) notFound();
 
@@ -47,9 +48,10 @@ async function Invitation({ params }: Pick<PageProps<"/i/[id]">, "params">) {
         </div>
       </div>
 
-      {/* 참석 신청 카드. 제출하면 같은 자리에서 완료 화면으로 바뀐다 (아직 저장은 안 함) */}
+      {/* 참석 신청 카드. 제출하면 Supabase에 저장하고 같은 자리에서 완료 화면으로 바뀐다.
+          bind로 초대장 id를 미리 끼워 넣어, 카드는 이름·참석 여부·동반 인원만 넘기면 된다. */}
       <div className="w-full bg-background-subtle px-20 pt-40 pb-60">
-        <RSVPCard />
+        <RSVPCard onSubmit={submitRsvp.bind(null, invitation.id)} />
       </div>
     </>
   );
